@@ -1,26 +1,26 @@
 # Docker Compose WordPress
-Docker ComposeでSSL/TLSに対応したWordPressを構築するリポジトリです。  
-[kthksgy/docker-compose-nginx-proxy](https://github.com/kthksgy/docker-compose-nginx-proxy)と組み合わせて使用します。
+This is a repository for building WordPress that supports SSL/TLS with Docker Compose.
+Used in combination with [sanjeetsagar/docker-nginx-proxy-with-auto-ssl](https://github.com/sanjeetsagar/docker-nginx-proxy-with-auto-ssl).
 
-## 必要動作環境
+## Required operating environment
 - Docker `>= 20.10`
 - Docker Compose `>= 2.7`
 
-参考: [Compose ファイル - Docker ドキュメント](https://matsuand.github.io/docs.docker.jp.onthefly/compose/compose-file/)
+Reference: [Compose file - Docker documentation](https://matsuand.github.io/docs.docker.jp.onthefly/compose/compose-file/)
 
-## 使用方法
+## How to use
 
-### 初期設定
-`.env`ファイルにWordPressとリバースプロキシの設定を記述します。
+### Initial setting
+Write your WordPress and reverse proxy settings in the `.env` file.
 
-- `DB_PASSWORD`: データベースのパスワード
-- `PRIMARY_HOST`: メインのホスト名
-  この名前でコンテナやネットワークを作成します。
-- `HOST`: WordPressに接続可能なホスト名の一覧
-  カンマ区切りで複数指定する事が出来ます。
-- `EMAIL`: SSL/TLSの証明書の期限が間近の場合に連絡を受けるメールアドレス
+- `DB_PASSWORD`: Database password
+- `PRIMARY_HOST`: primary hostname
+   Create a container or network with this name.
+- `HOST`: List of host names that can connect to WordPress
+   You can specify multiple options by separating them with commas.
+- `EMAIL`: Email address to be contacted when SSL/TLS certificates are about to expire
 
-#### `.env`ファイルの例
+#### Example `.env` file
 ```
 DB_PASSWORD=password
 PRIMARY_HOST=www.example.com
@@ -28,27 +28,27 @@ HOST=www.example.com,example.com
 EMAIL=mail@example.com
 ```
 
-### 起動
-先に[kthksgy/docker-compose-nginx-proxy](https://github.com/kthksgy/docker-compose-nginx-proxy)を起動しておいてください。
+### Start up
+Start [sanjeetsagar/docker-nginx-proxy-with-auto-ssl](https://github.com/sanjeetsagar/docker-nginx-proxy-with-auto-ssl) first.
 
-以下のコマンドで起動します。  
-初期設定を行う際に接続したURLがWordPressのデフォルトのURLに自動で認識されるので、**起動後は必ずメインのホスト名で接続して**、WordPressの初期設定を行ってください。
+Start it with the following command.
+The URL that you connect to when performing the initial settings is automatically recognized as the default URL for WordPress, so **be sure to connect with the main host name after startup** and perform the initial settings for WordPress.
 
-```bash
-$ docker-compose up -d
+``` bash
+docker-compose up -d
 ```
 
-## よくある質問(FAQ)
-### Q. HTTPをHTTPSに自動でリダイレクトしたい。
-nginx-proxyが勝手にやってくれるので、従来の`.htaccess`を変更するような対策は不要です。
+## Frequently Asked Questions (FAQ)
+### Q. I want to automatically redirect HTTP to HTTPS.
+nginx-proxy will do it for you, so you don't need to change the conventional `.htaccess`.
 
-### Q. www無しからwww有りに自動でリダイレクトしたい。もしくはその逆をしたい。
-WordPressが自動で1つのURLにリダイレクトするようです。  
-が、この際のリダイレクト先となるURLは**初期設定を行う際に接続したURL**となるので、必ず初期設定時はメインのURLで接続するようにしてください。
+### Q. I want to automatically redirect from without www to with www. Or vice versa.
+WordPress seems to automatically redirect to one URL.
+However, the URL that will be redirected to in this case will be the **URL that was connected during the initial setup**, so be sure to connect with the main URL during the initial setup.
 
-例えば、`www.example.com`(www有り)と`example.com`(www無し)からWordPressに接続可能な状態である時、`www.example.com`にURLを統一したいなら`www.example.com`で初期設定を行い、逆に`example.com`にURLを統一したいなら`example.com`で初期設定を行ってください。
+For example, when you can connect to WordPress from `www.example.com` (with www) and `example.com` (without www), if you want to unify the URL to `www.example.com`, use `www. If you want to make initial settings with example.com` and unify the URL to `example.com`, please do the initial settings with `example.com`.
 
-## 参考
+## Reference
 ### Docker Hub
 - [wordpress](https://hub.docker.com/_/wordpress)
 - [mariadb](https://hub.docker.com/_/mariadb)
