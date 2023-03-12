@@ -1,0 +1,8 @@
+# 環境変数ファイル
+.env
+
+# WordPressのボリューム
+wordpress/
+
+# MariaDBのボリューム
+mariadb/

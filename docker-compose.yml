@@ -1,0 +1,43 @@
+version: '3.9'
+
+services:
+  wordpress:
+    image: wordpress:6
+    container_name: ${PRIMARY_HOST}-wordpress
+    restart: always
+    depends_on:
+      - mariadb
+    environment:
+      WORDPRESS_DB_HOST: mariadb
+      WORDPRESS_DB_NAME: &DB_NAME wordpress
+      WORDPRESS_DB_USER: &DB_USER wordpress
+      WORDPRESS_DB_PASSWORD: ${DB_PASSWORD}
+      VIRTUAL_HOST: ${HOST}
+      LETSENCRYPT_HOST: ${HOST}
+      LETSENCRYPT_EMAIL: ${EMAIL}
+    expose:
+      - 80
+      - 443
+    networks:
+      - default
+      - nginx-proxy
+    volumes:
+      - ./wordpress:/var/www/html
+  mariadb:
+    image: mariadb:10
+    container_name: ${PRIMARY_HOST}-mariadb
+    restart: always
+    environment:
+      MYSQL_DATABASE: *DB_NAME
+      MYSQL_USER: *DB_USER
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_RANDOM_ROOT_PASSWORD: '1'
+    volumes:
+      - ./mariadb:/var/lib/mysql
+
+networks:
+  default:
+    name: ${PRIMARY_HOST}
+  nginx-proxy:
+    external: true
+    name: nginx-proxy
